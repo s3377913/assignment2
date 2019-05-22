@@ -67,4 +67,12 @@ public class PathCoordinate implements Comparable<PathCoordinate>{
     public int getDistance() {
         return distance;
     }
+
+    public int getTerrainCost() {
+        return coordinate.getTerrainCost();
+    }
+
+    public boolean isImpassable() {
+        return coordinate.getImpassable();
+    }
 }
