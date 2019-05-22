@@ -5,7 +5,7 @@ import map.Coordinate;
 /**
  * Class of a coordinate used for the Dijkstra algorithm.
  * The coordinate stores additional information:
- * it's penultimate coordinate and the total distance from
+ * it's previous coordinate and the total distance from
  * the source coordinate.
  *
  * This class implements the Comparable interface and can
@@ -14,7 +14,7 @@ import map.Coordinate;
  * Note: this class has a natural ordering that is inconsistent with equals.
  */
 public class PathCoordinate implements Comparable<PathCoordinate>{
-    private map.Coordinate penultimate;
+    private map.Coordinate previous;
     private map.Coordinate coordinate;
     private int distance;
 
@@ -24,18 +24,18 @@ public class PathCoordinate implements Comparable<PathCoordinate>{
      */
     public PathCoordinate(map.Coordinate coordinate) {
         this.coordinate = coordinate;
-        this.penultimate = null;
+        this.previous = null;
         this.distance = Integer.MAX_VALUE;
     }
 
     /**
      * Construct the path coordinate with all instance variables initialized.
-     * @param penultimate The penultimate to this coordinate (null if it is the source coordinate)
+     * @param previous The previous to this coordinate (null if it is the source coordinate)
      * @param coordinate Coordinate which this class represents
      * @param distance Distance from the source coordinate (
      */
-    public PathCoordinate(map.Coordinate penultimate, map.Coordinate coordinate, int distance) {
-        this.penultimate = penultimate;
+    public PathCoordinate(map.Coordinate previous, map.Coordinate coordinate, int distance) {
+        this.previous = previous;
         this.coordinate = coordinate;
         this.distance = distance;
     }
@@ -48,8 +48,8 @@ public class PathCoordinate implements Comparable<PathCoordinate>{
 
     // Getters and setters:
 
-    public void setPenultimate(Coordinate penultimate) {
-        this.penultimate = penultimate;
+    public void setPrevious(Coordinate previous) {
+        this.previous = previous;
     }
 
     public void setDistance(int distance) {
@@ -60,8 +60,8 @@ public class PathCoordinate implements Comparable<PathCoordinate>{
         return coordinate;
     }
 
-    public Coordinate getPenultimate() {
-        return penultimate;
+    public Coordinate getPrevious() {
+        return previous;
     }
 
     public int getDistance() {
