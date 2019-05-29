@@ -164,25 +164,29 @@ public class DijkstraPathFinder implements PathFinder
 }
 
 class ShortestPath {
-  List<Coordinate> coordList;
-  int pathWeight;
-  
-  public ShortestPath(List<Coordinate> coordList) {
-    this.coordList = coordList;
-    setWeight();
-  }
-  
-  public void setWeight() {
-    int incrementingWeight = 0;
-    for (int i=0; i< coordList.size(); i++) {
-      Coordinate currCoord = coordList.get(i);
-      incrementingWeight += currCoord.getTerrainCost();
+    List<Coordinate> coordList;
+    int pathWeight;
+
+    public ShortestPath(List<Coordinate> coordList) {
+        this.coordList = coordList;
+        setWeight();
     }
-    this.pathWeight = incrementingWeight;
-  }
-  
-  public int getWeight() {
-    return this.pathWeight;
-  }
-  
+
+    public void setWeight() {
+        int incrementingWeight = 0;
+        for (int i=0; i< coordList.size(); i++) {
+            Coordinate currCoord = coordList.get(i);
+            incrementingWeight += currCoord.getTerrainCost();
+        }
+        if (coordList.size() == 0) {
+            // No shortest Path found
+            this.pathWeight =  Integer.MAX_VALUE;
+        } else {
+            this.pathWeight = incrementingWeight;
+        }
+    }
+
+    public int getWeight() {
+        return this.pathWeight;
+    }
 }
