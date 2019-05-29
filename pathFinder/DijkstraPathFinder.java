@@ -15,25 +15,108 @@ public class DijkstraPathFinder implements PathFinder
 
     @Override
     public List<Coordinate> findPath() {
-        int originsLength = map.originCells.size();
-        int destLength = map.destCells.size();
-        System.out.println("originsLength: " + originsLength);
-        System.out.println("destLength: " + destLength);
-        ArrayList<ShortestPath> paths = new ArrayList<>();
-        for (int j=0; j<originsLength; j++) {
-            Coordinate sourceCoord = map.originCells.get(j);
-            PathCoordinate[][] pathCells = findPathsSingleSource(sourceCoord);
-            for (int i=0; i<destLength; i++) {
-                System.out.println("i: " + i + ", j: " + j);
-                Coordinate destCoord = map.destCells.get(i);
-                List<Coordinate> list = createShortestPathList(pathCells, sourceCoord, destCoord);
-                ShortestPath shortestPath = new ShortestPath(list);
-                System.out.println("shortestPath weight for " + j + ", " + i + ": " + shortestPath.getWeight());
-                paths.add(shortestPath);
-            }
+        if (map.originCells.size() == 1 && map.destCells.size() == 1) {
+          return performTaskA();
+        } else if (map.terrainCells.size() > 0) {
+          return performTaskB();
+        } else if (map.destCells.size() > 1 && map.destCells.size() > 1) {
+          return performTaskC();
+        } else {
+          return performTaskA();
         }
-        ShortestPath path = Collections.min(paths, Comparator.comparing(ShortestPath::getWeight));
-        return path.coordList;
+    }
+    
+    private List<Coordinate> performTaskA() {
+      Coordinate sourceCoord = map.originCells.get(0);
+      Coordinate destCoord = map.destCells.get(0);
+      PathCoordinate[][] pathCells = findWeightlessSingleSource(sourceCoord);
+      return createShortestPathList(pathCells, sourceCoord, destCoord);
+    }
+    
+    private List<Coordinate> performTaskB() {
+      Coordinate sourceCoord = map.originCells.get(0);
+      Coordinate destCoord = map.destCells.get(0);
+      PathCoordinate[][] pathCells = findPathsSingleSource(sourceCoord);
+      return createShortestPathList(pathCells, sourceCoord, destCoord);
+    }
+    
+    private List<Coordinate> performTaskC() {
+      int originsLength = map.originCells.size();
+      int destLength = map.destCells.size();
+      ArrayList<ShortestPath> paths = new ArrayList<>();
+      for (int j=0; j<originsLength; j++) {
+          Coordinate sourceCoord = map.originCells.get(j);
+          PathCoordinate[][] pathCells = findPathsSingleSource(sourceCoord);
+          for (int i=0; i<destLength; i++) {
+              Coordinate destCoord = map.destCells.get(i);
+              List<Coordinate> list = createShortestPathList(pathCells, sourceCoord, destCoord);
+              ShortestPath shortestPath = new ShortestPath(list);
+              paths.add(shortestPath);
+          }
+      }
+      ShortestPath path = Collections.min(paths, Comparator.comparing(ShortestPath::getWeight));
+      return path.coordList;
+    }
+    
+    private List<Coordinate> performTaskD() {
+      int originsLength = map.originCells.size();
+      int destLength = map.destCells.size();
+      ArrayList<ShortestPath> paths = new ArrayList<>();
+      for (int j=0; j<originsLength; j++) {
+          Coordinate sourceCoord = map.originCells.get(j);
+          PathCoordinate[][] pathCells = findPathsSingleSource(sourceCoord);
+          for (int i=0; i<destLength; i++) {
+              Coordinate destCoord = map.destCells.get(i);
+              List<Coordinate> list = createShortestPathList(pathCells, sourceCoord, destCoord);
+              ShortestPath shortestPath = new ShortestPath(list);
+              paths.add(shortestPath);
+          }
+      }
+      ShortestPath path = Collections.min(paths, Comparator.comparing(ShortestPath::getWeight));
+      return path.coordList;        
+    }
+    
+    
+    private PathQueue getPassableCoordinates(Coordinate sourceCoord) {
+      int nPassableCoordinates = 0;
+      // Create path coordinates and priority queue:
+      PriorityQueue<PathCoordinate> pathQueue = new PriorityQueue<>();
+      PathCoordinate[][] pathCells = new PathCoordinate[map.sizeR][map.sizeC];
+      for (int i = 0; i < map.sizeR; i++) {
+          for (int j = 0; j < map.sizeC; j++) {
+              PathCoordinate coord = new PathCoordinate(map.cells[i][j]);
+              pathCells[i][j] = coord;
+              if (map.isPassable(i, j)) {
+                  pathQueue.offer(coord);
+                  nPassableCoordinates++;
+              }
+          }
+      }
+      // Update source:
+      PathCoordinate source = pathCells[sourceCoord.getRow()][sourceCoord.getColumn()];
+      pathCoordinateUpdate(pathQueue, source, null, 0);
+      return new PathQueue(pathCells,pathQueue,nPassableCoordinates);
+    }
+    
+    private PathCoordinate[][] findWeightlessSingleSource(Coordinate sourceCoord) {
+      PathQueue pathQueue = getPassableCoordinates(sourceCoord);
+      HashSet<PathCoordinate> visitedCoords = new HashSet<>();
+      for (int i = 0; i < pathQueue.nPassableCoordinates; i++) {
+          PathCoordinate minCoord = pathQueue.pathQueue.poll();
+          if (minCoord == null) break;
+          visitedCoords.add(minCoord);
+          // Update all adjacent coordinates:
+          List<PathCoordinate> adjacentCoordinates = getAdjacentCoordinates(pathQueue.pathCells, minCoord);
+          for (PathCoordinate adjacentCoord : adjacentCoordinates) {
+              // Check if a new minimal distance for an adjacent coordinate can be found:
+              if (!visitedCoords.contains(adjacentCoord)) {
+                  int distCurr = minCoord.getDistance();
+                  int newDist = distCurr + 1;
+                  pathCoordinateUpdate(pathQueue.pathQueue, adjacentCoord, minCoord, newDist);
+              }
+          }
+      }
+      return pathQueue.pathCells;
     }
 
     /**
@@ -41,32 +124,15 @@ public class DijkstraPathFinder implements PathFinder
      * @return The shortest path from source to destination found.
      */
     private PathCoordinate[][] findPathsSingleSource(Coordinate sourceCoord) {
+        PathQueue pathQueue = getPassableCoordinates(sourceCoord);
         HashSet<PathCoordinate> visitedCoords = new HashSet<>();
-        int nPassableCoordinates = 0;
-        // Create path coordinates and priority queue:
-        PriorityQueue<PathCoordinate> pathQueue = new PriorityQueue<>();
-        PathCoordinate[][] pathCells = new PathCoordinate[map.sizeR][map.sizeC];
-        for (int i = 0; i < map.sizeR; i++) {
-            for (int j = 0; j < map.sizeC; j++) {
-                PathCoordinate coord = new PathCoordinate(map.cells[i][j]);
-                pathCells[i][j] = coord;
-                if (map.isPassable(i, j)) {
-                    pathQueue.offer(coord);
-                    nPassableCoordinates++;
-                }
-            }
-        }
-        // Update source:
-        PathCoordinate source = pathCells[sourceCoord.getRow()][sourceCoord.getColumn()];
-        pathCoordinateUpdate(pathQueue, source, null, 0);
-
         // Update other Coordinates:
-        for (int i = 0; i < nPassableCoordinates; i++) {
-            PathCoordinate minCoord = pathQueue.poll();
+        for (int i = 0; i < pathQueue.nPassableCoordinates; i++) {
+            PathCoordinate minCoord = pathQueue.pathQueue.poll();
             if (minCoord == null) break;
             visitedCoords.add(minCoord);
             // Update all adjacent coordinates:
-            List<PathCoordinate> adjacentCoordinates = getAdjacentCoordinates(pathCells, minCoord);
+            List<PathCoordinate> adjacentCoordinates = getAdjacentCoordinates(pathQueue.pathCells, minCoord);
             for (PathCoordinate adjacentCoord : adjacentCoordinates) {
                 // Check if a new minimal distance for an adjacent coordinate can be found:
                 if (!visitedCoords.contains(adjacentCoord)) {
@@ -76,12 +142,12 @@ public class DijkstraPathFinder implements PathFinder
                     int newDist = distCurr + terrainCost;
                     if (newDist < distAdj) {
                         // New minimal distance to adjacent coordinate found:
-                        pathCoordinateUpdate(pathQueue, adjacentCoord, minCoord, newDist);
+                        pathCoordinateUpdate(pathQueue.pathQueue, adjacentCoord, minCoord, newDist);
                     }
                 }
             }
         }
-        return pathCells;
+        return pathQueue.pathCells;
     }
 
     /**
