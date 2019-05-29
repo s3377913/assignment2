@@ -15,13 +15,26 @@ public class DijkstraPathFinder implements PathFinder
 
     @Override
     public List<Coordinate> findPath() {
-        Coordinate sourceCoord = map.originCells.get(0);
-        Coordinate destCoord = map.destCells.get(0);
-
-        PathCoordinate[][] pathCells = findPathsSingleSource(sourceCoord);
-
-        return createShortestPathList(pathCells, sourceCoord, destCoord);
-    } // end of findPath()
+        int originsLength = map.originCells.size();
+        int destLength = map.destCells.size();
+        System.out.println("originsLength: " + originsLength);
+        System.out.println("destLength: " + destLength);
+        ArrayList<ShortestPath> paths = new ArrayList<ShortestPath>();
+        for (int j=0; j<originsLength; j++) {
+          for (int i=0; i<destLength; i++) {
+            System.out.println("i: " + i + ", j: " + j);
+            Coordinate destCoord = map.destCells.get(i);
+            Coordinate sourceCoord = map.originCells.get(j);
+            PathCoordinate[][] pathCells = findPathsSingleSource(sourceCoord);
+            List<Coordinate> list = createShortestPathList(pathCells, sourceCoord, destCoord);
+            ShortestPath shortestPath = new ShortestPath(list);
+            System.out.println("shortestPath weight for " + j + ", " + i + ": " + shortestPath.getWeight());
+            paths.add(shortestPath);
+          }
+        }
+        ShortestPath path = Collections.min(paths, Comparator.comparing(s -> s.getWeight()));
+        return path.coordList;
+    }
 
     /**
      * Dijkstra algorithm for the shortest paths starting from a single source. 
@@ -148,7 +161,28 @@ public class DijkstraPathFinder implements PathFinder
         // placeholder
         return 0;
     } // end of cellsExplored()
+}
 
-
-
-} // end of class DijsktraPathFinder
+class ShortestPath {
+  List<Coordinate> coordList;
+  int pathWeight;
+  
+  public ShortestPath(List<Coordinate> coordList) {
+    this.coordList = coordList;
+    setWeight();
+  }
+  
+  public void setWeight() {
+    int incrementingWeight = 0;
+    for (int i=0; i< coordList.size(); i++) {
+      Coordinate currCoord = coordList.get(i);
+      incrementingWeight += currCoord.getTerrainCost();
+    }
+    this.pathWeight = incrementingWeight;
+  }
+  
+  public int getWeight() {
+    return this.pathWeight;
+  }
+  
+}
