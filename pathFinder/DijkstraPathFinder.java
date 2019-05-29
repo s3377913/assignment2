@@ -19,7 +19,7 @@ public class DijkstraPathFinder implements PathFinder
         int destLength = map.destCells.size();
         System.out.println("originsLength: " + originsLength);
         System.out.println("destLength: " + destLength);
-        ArrayList<ShortestPath> paths = new ArrayList<ShortestPath>();
+        ArrayList<ShortestPath> paths = new ArrayList<>();
         for (int j=0; j<originsLength; j++) {
           for (int i=0; i<destLength; i++) {
             System.out.println("i: " + i + ", j: " + j);
@@ -32,7 +32,7 @@ public class DijkstraPathFinder implements PathFinder
             paths.add(shortestPath);
           }
         }
-        ShortestPath path = Collections.min(paths, Comparator.comparing(s -> s.getWeight()));
+        ShortestPath path = Collections.min(paths, Comparator.comparing(ShortestPath::getWeight));
         return path.coordList;
     }
 
