@@ -30,6 +30,8 @@ public class PathMap
     public List<Coordinate> destCells;
     // list of waypoint cells/coordinates
     public List<Coordinate> waypointCells;
+    // list of waypoint cells/coordinates
+    public Map<Coordinate, Integer> terrainCells;
     // whether to visualise or not
     public boolean isVisu = true;
 
@@ -54,6 +56,7 @@ public class PathMap
         originCells = oriCells;
         destCells = desCells;
         this.waypointCells = waypointCells;
+        this.terrainCells = terrainCells;
 
         cells = new Coordinate[sizeR][sizeC];
 
