@@ -21,16 +21,16 @@ public class DijkstraPathFinder implements PathFinder
         System.out.println("destLength: " + destLength);
         ArrayList<ShortestPath> paths = new ArrayList<>();
         for (int j=0; j<originsLength; j++) {
-          for (int i=0; i<destLength; i++) {
-            System.out.println("i: " + i + ", j: " + j);
-            Coordinate destCoord = map.destCells.get(i);
             Coordinate sourceCoord = map.originCells.get(j);
             PathCoordinate[][] pathCells = findPathsSingleSource(sourceCoord);
-            List<Coordinate> list = createShortestPathList(pathCells, sourceCoord, destCoord);
-            ShortestPath shortestPath = new ShortestPath(list);
-            System.out.println("shortestPath weight for " + j + ", " + i + ": " + shortestPath.getWeight());
-            paths.add(shortestPath);
-          }
+            for (int i=0; i<destLength; i++) {
+                System.out.println("i: " + i + ", j: " + j);
+                Coordinate destCoord = map.destCells.get(i);
+                List<Coordinate> list = createShortestPathList(pathCells, sourceCoord, destCoord);
+                ShortestPath shortestPath = new ShortestPath(list);
+                System.out.println("shortestPath weight for " + j + ", " + i + ": " + shortestPath.getWeight());
+                paths.add(shortestPath);
+            }
         }
         ShortestPath path = Collections.min(paths, Comparator.comparing(ShortestPath::getWeight));
         return path.coordList;
