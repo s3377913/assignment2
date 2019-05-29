@@ -163,6 +163,18 @@ public class DijkstraPathFinder implements PathFinder
     } // end of cellsExplored()
 }
 
+class PathQueue {
+  PathCoordinate[][] pathCells;
+  PriorityQueue<PathCoordinate> pathQueue;
+  int nPassableCoordinates;
+  
+  public PathQueue(PathCoordinate[][] pathCells, PriorityQueue<PathCoordinate> pathQueue, int nPassableCoordinates) {
+    this.pathCells = pathCells;
+    this.pathQueue = pathQueue;
+    this.nPassableCoordinates = nPassableCoordinates;
+  }
+}
+
 class ShortestPath {
     List<Coordinate> coordList;
     int pathWeight;
