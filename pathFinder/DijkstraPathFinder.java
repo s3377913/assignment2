@@ -88,6 +88,8 @@ public class DijkstraPathFinder implements PathFinder
             }
             currLast = pathCells[prev.getRow()][prev.getColumn()];
         }
+        // Add the source to the list:
+        path.add(source);
         Collections.reverse(path);
         return path;
     }
