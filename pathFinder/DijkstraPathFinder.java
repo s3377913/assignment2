@@ -37,8 +37,13 @@ public class DijkstraPathFinder implements PathFinder
                 paths.add(shortestPath);
             }
         }
-        ShortestPath path = Collections.min(paths, Comparator.comparing(ShortestPath::getWeight));
-        return path.getCoordList();
+        ShortestPath result;
+        try {
+            result = Collections.min(paths, Comparator.comparing(ShortestPath::getWeight));
+        } catch (NoSuchElementException e) {
+            return new ArrayList<>();
+        }
+        return result.getCoordList();
     }
 
     /**
