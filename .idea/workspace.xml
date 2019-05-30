@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="40b823ba-4fc4-4495-8534-4aa47df0e7ae" name="Default Changelist" comment="" />
+    <list default="true" id="40b823ba-4fc4-4495-8534-4aa47df0e7ae" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pathFinder/DijkstraPathFinder.java" beforeDir="false" afterPath="$PROJECT_DIR$/pathFinder/DijkstraPathFinder.java" afterDir="false" />
+    </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -17,12 +20,12 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pathFinder/DijkstraPathFinder.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="280">
-              <caret line="283" column="7" lean-forward="true" selection-start-line="283" selection-start-column="7" selection-end-line="283" selection-end-column="7" />
+            <state relative-caret-position="1113">
+              <caret line="328" column="33" selection-start-line="328" selection-start-column="33" selection-end-line="328" selection-end-column="33" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#15791#15792#0" expanded="true" />
-                <element signature="e#15859#15860#0" expanded="true" />
+                <element signature="e#16213#16214#0" expanded="true" />
+                <element signature="e#16281#16282#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -31,12 +34,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pathFinder/Graph.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="313">
+            <state relative-caret-position="1666">
               <caret line="102" column="21" selection-start-line="102" selection-start-column="21" selection-end-line="102" selection-end-column="21" />
-              <folding>
-                <element signature="e#1080#1081#0" expanded="true" />
-                <element signature="e#1136#1137#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -62,7 +61,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/map/Coordinate.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="382">
+            <state relative-caret-position="1462">
               <caret line="94" column="19" selection-start-line="94" selection-start-column="19" selection-end-line="94" selection-end-column="19" />
             </state>
           </provider>
@@ -71,7 +70,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/PathFinderTester.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="561">
+            <state relative-caret-position="4964">
               <caret line="298" column="43" selection-start-line="298" selection-start-column="43" selection-end-line="298" selection-end-column="43" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -92,6 +91,7 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>pathCoordinates</find>
+      <find>==</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -141,8 +141,8 @@
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
       <pane id="Scope" />
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -168,11 +168,19 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.PathFinderTesterWallB">
+  <component name="RunManager" selected="Application.PathFinderTester10">
     <configuration name="PathFinderTester1" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="PathFinderTester" />
       <module name="assignment2" />
       <option name="PROGRAM_PARAMETERS" value="-v -t terrain1.para -w waypoints1.para example1.para" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="PathFinderTester10" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="PathFinderTester" />
+      <module name="assignment2" />
+      <option name="PROGRAM_PARAMETERS" value="-v -t terrain10.para -w waypoints10.para example10.para" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -282,6 +290,7 @@
       <item itemvalue="Application.PathFinderTester7" />
       <item itemvalue="Application.PathFinderTester8" />
       <item itemvalue="Application.PathFinderTester9" />
+      <item itemvalue="Application.PathFinderTester10" />
       <item itemvalue="Application.PathFinderTesterLarge" />
       <item itemvalue="Application.PathFinderTesterWall" />
       <item itemvalue="Application.PathFinderTesterWallB" />
@@ -302,17 +311,18 @@
       <workItem from="1558692325660" duration="5000" />
       <workItem from="1558951932589" duration="4200000" />
       <workItem from="1558963291486" duration="299000" />
-      <workItem from="1559118226567" duration="18190000" />
+      <workItem from="1559118226567" duration="18264000" />
+      <workItem from="1559189616557" duration="707000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="34972000" />
+    <option name="totallyTimeSpent" value="35753000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="25" width="1920" height="1055" extended-state="6" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.1905016" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.19263607" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="Image Layers" order="3" />
@@ -425,6 +435,25 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/pathFinder/DijkstraPathFinder.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1113">
+          <caret line="328" column="33" selection-start-line="328" selection-start-column="33" selection-end-line="328" selection-end-column="33" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#16213#16214#0" expanded="true" />
+            <element signature="e#16281#16282#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pathFinder/Graph.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1666">
+          <caret line="102" column="21" selection-start-line="102" selection-start-column="21" selection-end-line="102" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/map/PathMap.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="442">
@@ -441,40 +470,17 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/map/Coordinate.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="382">
+        <state relative-caret-position="1462">
           <caret line="94" column="19" selection-start-line="94" selection-start-column="19" selection-end-line="94" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pathFinder/Graph.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="313">
-          <caret line="102" column="21" selection-start-line="102" selection-start-column="21" selection-end-line="102" selection-end-column="21" />
-          <folding>
-            <element signature="e#1080#1081#0" expanded="true" />
-            <element signature="e#1136#1137#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/PathFinderTester.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="561">
+        <state relative-caret-position="4964">
           <caret line="298" column="43" selection-start-line="298" selection-start-column="43" selection-end-line="298" selection-end-column="43" />
           <folding>
             <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pathFinder/DijkstraPathFinder.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="280">
-          <caret line="283" column="7" lean-forward="true" selection-start-line="283" selection-start-column="7" selection-end-line="283" selection-end-column="7" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#15791#15792#0" expanded="true" />
-            <element signature="e#15859#15860#0" expanded="true" />
           </folding>
         </state>
       </provider>
