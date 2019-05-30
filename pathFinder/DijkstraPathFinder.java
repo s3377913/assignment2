@@ -56,7 +56,8 @@ public class DijkstraPathFinder implements PathFinder
     private ShortestPath createShortestPathAlongWaypoints(Coordinate origin,
                                                               Coordinate destCoord, List<Coordinate> waypointCells) {
         // Create a graph of shortest interconnects:
-        Graph<Coordinate, ShortestPath> distanceGraph = createShortestInterconnectsGraph(origin, destCoord, waypointCells);
+        Graph<Coordinate, ShortestPath> distanceGraph =
+                createShortestInterconnectsGraph(origin, destCoord, waypointCells);
 
         // Search the graph for the shortest path from origin to dest including all waypoints:
         return searchGraphForShortestPath(origin, destCoord, new HashSet<>(waypointCells), distanceGraph);
@@ -73,7 +74,8 @@ public class DijkstraPathFinder implements PathFinder
      * @return A directed graph in which each origin/waypoint/destination is connected with each other via a shortest
      * path. A direct connection between origin and destination is not included.
      */
-    private Graph<Coordinate, ShortestPath> createShortestInterconnectsGraph(Coordinate origin, Coordinate destCoord, List<Coordinate> waypointCells) {
+    private Graph<Coordinate, ShortestPath> createShortestInterconnectsGraph(Coordinate origin, Coordinate destCoord,
+                                                                             List<Coordinate> waypointCells) {
         List<Coordinate> allLandmarks = new ArrayList<>(waypointCells);
         allLandmarks.add(origin);
         allLandmarks.add(destCoord);
@@ -81,7 +83,8 @@ public class DijkstraPathFinder implements PathFinder
         // Create the graph representation between each origin/waypoint/edge:
         for (Coordinate startCoord : allLandmarks) {
             PathCoordinate[][] pathCells = findPathsSingleOrigin(startCoord);
-            // Adding of startCoord to distance Graph is done by innermost loop too (as startCoord and coordB iterate over same coords)
+            // Adding of startCoord to distance Graph is done by innermost loop too
+            // (as startCoord and coordB iterate over same coords)
             for (Coordinate endCoord : allLandmarks) {
                 if (!distanceGraph.vertexExists(endCoord)) {
                     // Add missing coordinate to graph as new vertex:
