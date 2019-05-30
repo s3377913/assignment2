@@ -39,7 +39,7 @@ public class DijkstraPathFinder implements PathFinder
             }
         }
         ShortestPath path = Collections.min(paths, Comparator.comparing(ShortestPath::getWeight));
-        return path.coordList;
+        return path.getCoordList();
     }
 
     // TODO: Method currently assumes that source, the waypoints, and the destination are different coordinates!
@@ -89,7 +89,7 @@ public class DijkstraPathFinder implements PathFinder
         } // Creation of shortest distances graph complete
 
         ShortestPath result = searchForShortestPathAlongWaypoints(sourceCoord, destCoord, new HashSet<>(waypointCells), distanceGraph);
-        return result.coordList;
+        return result.getCoordList();
     }
 
     /**

@@ -10,7 +10,7 @@ import java.util.List;
  * representing the shortest path and additionally includes the weight of the path to compare it with other paths.
  */
 class ShortestPath {
-    List<Coordinate> coordList;
+    private List<Coordinate> coordList;
     private int pathWeight;
     private boolean validPath;
 
@@ -93,5 +93,9 @@ class ShortestPath {
 
     public int getWeight() {
         return this.pathWeight;
+    }
+
+    public List<Coordinate> getCoordList() {
+        return coordList;
     }
 }
