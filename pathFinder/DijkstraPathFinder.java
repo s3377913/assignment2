@@ -55,6 +55,25 @@ public class DijkstraPathFinder implements PathFinder
      */
     private ShortestPath createShortestPathAlongWaypoints(Coordinate origin,
                                                               Coordinate destCoord, List<Coordinate> waypointCells) {
+        // Create a graph of shortest interconnects:
+        Graph<Coordinate, ShortestPath> distanceGraph = createShortestInterconnectsGraph(origin, destCoord, waypointCells);
+
+        // Search the graph for the shortest path from origin to dest including all waypoints:
+        return searchForShortestPathAlongWaypoints(origin, destCoord, new HashSet<>(waypointCells), distanceGraph);
+    }
+
+    /**
+     * This method creates a graph of shortest interconnects. The graph represents the distances and shortest paths
+     * between each origin/waypoint/destination cell with the exception that not direct connection of origin and
+     * destination is allowed (because the waypoints have to be included). This graph can then be utilized for an
+     * efficient search of a shortest path from origin to destination including all waypoints.
+     * @param origin The origin coordinate.
+     * @param destCoord The destination coordinate.
+     * @param waypointCells A non-empty list of waypoints coordinates to visit before the destination.
+     * @return A directed graph in which each origin/waypoint/destination is connected with each other via a shortest
+     * path. A direct connection between origin and destination is not included.
+     */
+    private Graph<Coordinate, ShortestPath> createShortestInterconnectsGraph(Coordinate origin, Coordinate destCoord, List<Coordinate> waypointCells) {
         List<Coordinate> allLandmarks = new ArrayList<>(waypointCells);
         allLandmarks.add(origin);
         allLandmarks.add(destCoord);
@@ -84,8 +103,7 @@ public class DijkstraPathFinder implements PathFinder
                 }
             }
         } // Creation of shortest distances graph complete
-
-        return searchForShortestPathAlongWaypoints(origin, destCoord, new HashSet<>(waypointCells), distanceGraph);
+        return distanceGraph;
     }
 
     /**
