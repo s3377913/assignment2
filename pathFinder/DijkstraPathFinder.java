@@ -59,7 +59,7 @@ public class DijkstraPathFinder implements PathFinder
         Graph<Coordinate, ShortestPath> distanceGraph = createShortestInterconnectsGraph(origin, destCoord, waypointCells);
 
         // Search the graph for the shortest path from origin to dest including all waypoints:
-        return searchForShortestPathAlongWaypoints(origin, destCoord, new HashSet<>(waypointCells), distanceGraph);
+        return searchGraphForShortestPath(origin, destCoord, new HashSet<>(waypointCells), distanceGraph);
     }
 
     /**
@@ -109,6 +109,8 @@ public class DijkstraPathFinder implements PathFinder
     /**
      * Dynamic programming approach for the search of the shortest path from a origin to a destination including the
      * waypoints. This method works recursively and the problem size is reduced by one vertex each recursion call.
+     * This method searches the graph for a shortest path from origin to destination including all other vertices
+     * (the waypoints).
      *
      * @param origin The current origin coordinate.
      * @param dest The final destination coordinate.
@@ -116,9 +118,8 @@ public class DijkstraPathFinder implements PathFinder
      * @param graph The graph containing the information about the shortest paths between the vertices.
      * @return The shortest path from origin to destination including all waypoints.
      */
-    private ShortestPath searchForShortestPathAlongWaypoints(Coordinate origin, Coordinate dest,
-                                                                 HashSet<Coordinate> waypoints,
-                                                                 Graph<Coordinate, ShortestPath> graph) {
+    private ShortestPath searchGraphForShortestPath(Coordinate origin, Coordinate dest,  HashSet<Coordinate> waypoints,
+                                                    Graph<Coordinate, ShortestPath> graph) {
         // Stop condition
         if (waypoints.size() == 0) {
             return graph.getEdgeInfo(origin, dest);
@@ -128,7 +129,7 @@ public class DijkstraPathFinder implements PathFinder
         for (Coordinate waypoint : waypoints) {
             HashSet<Coordinate> newWaypoints = new HashSet<>(waypoints);
             newWaypoints.remove(waypoint);
-            ShortestPath fromWaypoint = searchForShortestPathAlongWaypoints(waypoint, dest, newWaypoints, graph);
+            ShortestPath fromWaypoint = searchGraphForShortestPath(waypoint, dest, newWaypoints, graph);
             ShortestPath toWaypoint = graph.getEdgeInfo(origin, waypoint);
             ShortestPath newCandidate;
             if (fromWaypoint.isValidPath() && toWaypoint.isValidPath()) {
