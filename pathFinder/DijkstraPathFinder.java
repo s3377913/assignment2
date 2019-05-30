@@ -267,10 +267,20 @@ class ShortestPath {
     int pathWeight;
     boolean validPath;
 
+    /**
+     * Constructor of the shortest path. The shortest path will not be empty and the weight will be set to
+     * Integer.MAX_VALUE if the coordList is empty.
+     * @param coordList The list of coordinates which the ShortestPath instance represents.
+     */
     public ShortestPath(List<Coordinate> coordList) {
         this.coordList = coordList;
-        setWeight();
-        validPath = true;
+        if (coordList.isEmpty()) {
+            this.pathWeight = Integer.MAX_VALUE;
+            this.validPath = false;
+        } else {
+            setWeight();
+            validPath = true;
+        }
     }
 
     /**
