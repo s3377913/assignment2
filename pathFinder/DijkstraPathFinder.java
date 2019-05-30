@@ -23,16 +23,16 @@ public class DijkstraPathFinder implements PathFinder
         for (int j=0; j<originsLength; j++) { // Iteration over every origin
             // For each origin calculate the Dijkstra PathCoordinate matrix only once
             // In this matrix the information about the shortest path to every other coordinate is stored
-            Coordinate sourceCoord = map.originCells.get(j);
-            PathCoordinate[][] pathCells = findPathsSingleSource(sourceCoord);
+            Coordinate originCoord = map.originCells.get(j);
+            PathCoordinate[][] pathCells = findPathsSingleOrigin(originCoord);
             for (int i=0; i<destLength; i++) { // Iteration over every destination
                 ShortestPath shortestPath;
                 Coordinate destCoord = map.destCells.get(i);
                 if (map.waypointCells.size() == 0) { // No Waypoints have to be included, solve Task A/B:
                     // (Task C is solved through the iterations over the origins and destinations above)
-                    shortestPath = createShortestPathList(pathCells, sourceCoord, destCoord);
+                    shortestPath = createShortestPathList(pathCells, originCoord, destCoord);
                 } else { // Waypoints have to be included, solve Task D:
-                    shortestPath = createShortestPathAlongWaypoints(sourceCoord, destCoord, map.waypointCells);
+                    shortestPath = createShortestPathAlongWaypoints(originCoord, destCoord, map.waypointCells);
                 }
                 paths.add(shortestPath);
             }
@@ -41,43 +41,42 @@ public class DijkstraPathFinder implements PathFinder
         return path.getCoordList();
     }
 
-    // TODO: Method currently assumes that source, the waypoints, and the destination are different coordinates!
     /**
-     * Create the shortest path from source to destination including all waypoints. Finding a solution is implemented
-     * as a dynamic program. First, we create a graph connecting each source/waypoint/destination cell with each other.
+     * Create the shortest path from origin to destination including all waypoints. Finding a solution is implemented
+     * as a dynamic program. First, we create a graph connecting each origin/waypoint/destination cell with each other.
      * The weight of each edge is the distance between the two vertex coordinates. The Graph class is used to create
      * the graph representation. After we created this fully connected bidirectional graph a modified traveling
      * salesman problem results. This traveling salesman problem is solved with the dynamic programming approach
      * suggested by Held and Karp.
-     * @param sourceCoord The source coordinate of the path.
+     * @param origin The origin coordinate of the path.
      * @param destCoord The destination coordinate of the path.
      * @param waypointCells All waypoint cells which should be visited.
-     * @return The shortest path from source to destination including all waypoints.
+     * @return The shortest path from origin to destination including all waypoints.
      */
-    private ShortestPath createShortestPathAlongWaypoints(Coordinate sourceCoord,
+    private ShortestPath createShortestPathAlongWaypoints(Coordinate origin,
                                                               Coordinate destCoord, List<Coordinate> waypointCells) {
-        List<Coordinate> allCoords = new ArrayList<>(waypointCells);
-        allCoords.add(sourceCoord);
-        allCoords.add(destCoord);
+        List<Coordinate> allLandmarks = new ArrayList<>(waypointCells);
+        allLandmarks.add(origin);
+        allLandmarks.add(destCoord);
         Graph<Coordinate, ShortestPath> distanceGraph = new Graph<>();
-        // Create the graph representation between each source/waypoint/edge:
-        for (Coordinate startCoord : allCoords) {
-            PathCoordinate[][] pathCells = findPathsSingleSource(startCoord);
+        // Create the graph representation between each origin/waypoint/edge:
+        for (Coordinate startCoord : allLandmarks) {
+            PathCoordinate[][] pathCells = findPathsSingleOrigin(startCoord);
             // Adding of startCoord to distance Graph is done by innermost loop too (as startCoord and coordB iterate over same coords)
-            for (Coordinate endCoord : allCoords) {
+            for (Coordinate endCoord : allLandmarks) {
                 if (!distanceGraph.vertexExists(endCoord)) {
                     // Add missing coordinate to graph as new vertex:
                     distanceGraph.addVertex(endCoord);
                 }
-                // Exclude direct source <-> destination connections:
-                boolean sourceToDest = startCoord.equals(sourceCoord) && endCoord.equals(destCoord);
-                boolean destToSource = startCoord.equals(destCoord) && endCoord.equals(sourceCoord);
-                if (sourceToDest || destToSource) {
-                    // Don't add connections from source to destination or destination to source because at least one
-                    // waypoint has to be visited. This means the solution is not a direct connection between source
+                // Exclude direct origin <-> destination connections:
+                boolean originToDest = startCoord.equals(origin) && endCoord.equals(destCoord);
+                boolean destToOrigin = startCoord.equals(destCoord) && endCoord.equals(origin);
+                if (originToDest || destToOrigin) {
+                    // Don't add connections from origin to destination or destination to origin because at least one
+                    // waypoint has to be visited. This means the solution is not a direct connection between origin
                     // and destination.
                     continue;
-                } // End of source <-> destination exclusion
+                } // End of origin <-> destination exclusion
                 // Add the edge between startCoord and endCoord if it does not exist already and startCoord != endCoord:
                 if (!startCoord.equals(endCoord) && !distanceGraph.edgeExists(startCoord, endCoord)) {
                     ShortestPath shortestPath = createShortestPathList(pathCells, startCoord, endCoord);
@@ -86,25 +85,25 @@ public class DijkstraPathFinder implements PathFinder
             }
         } // Creation of shortest distances graph complete
 
-        return searchForShortestPathAlongWaypoints(sourceCoord, destCoord, new HashSet<>(waypointCells), distanceGraph);
+        return searchForShortestPathAlongWaypoints(origin, destCoord, new HashSet<>(waypointCells), distanceGraph);
     }
 
     /**
-     * Dynamic programming approach for the search of the shortest path from a source to a destination including the
+     * Dynamic programming approach for the search of the shortest path from a origin to a destination including the
      * waypoints. This method works recursively and the problem size is reduced by one vertex each recursion call.
      *
-     * @param source The current source coordinate.
+     * @param origin The current origin coordinate.
      * @param dest The final destination coordinate.
      * @param waypoints The original set is not changed. It is worked on a shallow copy of the set.
      * @param graph The graph containing the information about the shortest paths between the vertices.
-     * @return The shortest path from source to destination including all waypoints.
+     * @return The shortest path from origin to destination including all waypoints.
      */
-    private ShortestPath searchForShortestPathAlongWaypoints(Coordinate source, Coordinate dest,
+    private ShortestPath searchForShortestPathAlongWaypoints(Coordinate origin, Coordinate dest,
                                                                  HashSet<Coordinate> waypoints,
                                                                  Graph<Coordinate, ShortestPath> graph) {
         // Stop condition
         if (waypoints.size() == 0) {
-            return graph.getEdgeInfo(source, dest);
+            return graph.getEdgeInfo(origin, dest);
         }
         // Recursive creation of candidates:
         List<ShortestPath> canidates = new ArrayList<>();
@@ -112,7 +111,7 @@ public class DijkstraPathFinder implements PathFinder
             HashSet<Coordinate> newWaypoints = new HashSet<>(waypoints);
             newWaypoints.remove(waypoint);
             ShortestPath fromWaypoint = searchForShortestPathAlongWaypoints(waypoint, dest, newWaypoints, graph);
-            ShortestPath toWaypoint = graph.getEdgeInfo(source, waypoint);
+            ShortestPath toWaypoint = graph.getEdgeInfo(origin, waypoint);
             ShortestPath newCandidate;
             if (fromWaypoint.isValidPath() && toWaypoint.isValidPath()) {
                 // Both paths alone are valid, try to concatenate them:
@@ -134,10 +133,10 @@ public class DijkstraPathFinder implements PathFinder
         }
     }
     /**
-     * Dijkstra algorithm for the shortest paths starting from a single source. 
-     * @return The shortest path from source to destination found.
+     * Dijkstra algorithm for the shortest paths starting from a single origin.
+     * @return The shortest path from origin to destination found.
      */
-    private PathCoordinate[][] findPathsSingleSource(Coordinate sourceCoord) {
+    private PathCoordinate[][] findPathsSingleOrigin(Coordinate originCoord) {
         HashSet<PathCoordinate> visitedCoords = new HashSet<>();
         int nPassableCoordinates = 0;
         // Create path coordinates and priority queue:
@@ -153,9 +152,9 @@ public class DijkstraPathFinder implements PathFinder
                 }
             }
         }
-        // Update source:
-        PathCoordinate source = pathCells[sourceCoord.getRow()][sourceCoord.getColumn()];
-        pathCoordinateUpdate(pathQueue, source, null, 0);
+        // Update origin:
+        PathCoordinate origin = pathCells[originCoord.getRow()][originCoord.getColumn()];
+        pathCoordinateUpdate(pathQueue, origin, null, 0);
 
         // Update other Coordinates:
         for (int i = 0; i < nPassableCoordinates; i++) {
@@ -182,25 +181,25 @@ public class DijkstraPathFinder implements PathFinder
     }
 
     /**
-     * Create a list of coordinates to visit for a shortest path from source to destination.
+     * Create a list of coordinates to visit for a shortest path from origin to destination.
      * @param pathCells The path cells of the map after running the Dijkstra algorithm.
-     * @return The coordinates to visit for a shortest path from source to destination.
+     * @return The coordinates to visit for a shortest path from origin to destination.
      */
-    private ShortestPath createShortestPathList(PathCoordinate[][] pathCells, Coordinate source, Coordinate dest) {
+    private ShortestPath createShortestPathList(PathCoordinate[][] pathCells, Coordinate origin, Coordinate dest) {
         List<Coordinate> path = new ArrayList<>();
         PathCoordinate currLast = pathCells[dest.getRow()][dest.getColumn()];
         int pathWeight = currLast.getDistance();
-        while (!currLast.getCoordinate().equals(source)) {
+        while (!currLast.getCoordinate().equals(origin)) {
             path.add(currLast.getCoordinate());
             Coordinate prev = currLast.getPrevious();
             if (prev == null) {
-                // No Connection between source and destination found, return invalid path
+                // No Connection between origin and destination found, return invalid path
                 return new ShortestPath();
             }
             currLast = pathCells[prev.getRow()][prev.getColumn()];
         }
-        // Add the source to the list:
-        path.add(source);
+        // Add the origin to the list:
+        path.add(origin);
         Collections.reverse(path);
         return new ShortestPath(path, pathWeight);
     }
@@ -239,7 +238,7 @@ public class DijkstraPathFinder implements PathFinder
      * Update the path coordinate and reinsert into the priority queue.
      * @param coord The path coordinate to be updated
      * @param previous The new previous coordinate of this path coordinate
-     * @param distance The new total distance to the source coordinate
+     * @param distance The new total distance to the origin coordinate
      */
     private void pathCoordinateUpdate(PriorityQueue<PathCoordinate> pathQueue,
                                       PathCoordinate coord, PathCoordinate previous, int distance) {
