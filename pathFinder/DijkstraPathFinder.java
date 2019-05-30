@@ -17,16 +17,21 @@ public class DijkstraPathFinder implements PathFinder
     public List<Coordinate> findPath() {
         int originsLength = map.originCells.size();
         int destLength = map.destCells.size();
+        // Collection of the shortest path between each origin and destination coordinate:
+        // If waypoints are included in the map the waypoints are included in each ShortestPath too.
         ArrayList<ShortestPath> paths = new ArrayList<>();
-        for (int j=0; j<originsLength; j++) {
+        for (int j=0; j<originsLength; j++) { // Iteration over every origin
+            // For each origin calculate the Dijkstra PathCoordinate matrix only once
+            // In this matrix the information about the shortest path to every other coordinate is stored
             Coordinate sourceCoord = map.originCells.get(j);
             PathCoordinate[][] pathCells = findPathsSingleSource(sourceCoord);
-            for (int i=0; i<destLength; i++) {
+            for (int i=0; i<destLength; i++) { // Iteration over every destination
                 List<Coordinate> list;
                 Coordinate destCoord = map.destCells.get(i);
-                if (map.waypointCells.size() == 0) {
+                if (map.waypointCells.size() == 0) { // No Waypoints have to be included, solve Task A/B:
+                    // (Task C is solved through the iterations over the origins and destinations above)
                     list = createShortestPathList(pathCells, sourceCoord, destCoord);
-                } else {
+                } else { // Waypoints have to be included, solve Task D:
                     list = createShortestPathAlongWaypoints(sourceCoord, destCoord, map.waypointCells);
                 }
                 ShortestPath shortestPath = new ShortestPath(list);
