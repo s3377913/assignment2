@@ -28,10 +28,10 @@ public class DijkstraPathFinder implements PathFinder
             for (int i=0; i<destLength; i++) { // Iteration over every destination
                 ShortestPath shortestPath;
                 Coordinate destCoord = map.destCells.get(i);
-                if (map.waypointCells.size() == 0) { // No Waypoints have to be included, solve Task A/B:
+                if (map.waypointCells.size() == 0) { // No Waypoints have to be included, solve Task A/B: <------------- TASK A B C
                     // (Task C is solved through the iterations over the origins and destinations above)
                     shortestPath = createShortestPathList(pathCells, originCoord, destCoord);
-                } else { // Waypoints have to be included, solve Task D:
+                } else { // Waypoints have to be included, solve Task D: <---------------------------------------------- TASK D
                     shortestPath = createShortestPathAlongWaypoints(originCoord, destCoord, map.waypointCells);
                 }
                 paths.add(shortestPath);
