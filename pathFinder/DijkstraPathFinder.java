@@ -30,7 +30,7 @@ public class DijkstraPathFinder implements PathFinder
                 Coordinate destCoord = map.destCells.get(i);
                 if (map.waypointCells.size() == 0) { // No Waypoints have to be included, solve Task A/B: <------------- TASK A B C
                     // (Task C is solved through the iterations over the origins and destinations above)
-                    shortestPath = createShortestPathList(pathCells, originCoord, destCoord);
+                    shortestPath = createShortestPath(pathCells, originCoord, destCoord);
                 } else { // Waypoints have to be included, solve Task D: <---------------------------------------------- TASK D
                     shortestPath = createShortestPathAlongWaypoints(originCoord, destCoord, map.waypointCells);
                 }
@@ -101,7 +101,7 @@ public class DijkstraPathFinder implements PathFinder
                 } // End of origin <-> destination exclusion
                 // Add the edge between startCoord and endCoord if it does not exist already and startCoord != endCoord:
                 if (!startCoord.equals(endCoord) && !distanceGraph.edgeExists(startCoord, endCoord)) {
-                    ShortestPath shortestPath = createShortestPathList(pathCells, startCoord, endCoord);
+                    ShortestPath shortestPath = createShortestPath(pathCells, startCoord, endCoord);
                     distanceGraph.addEdge(startCoord, endCoord, shortestPath.getWeight(), shortestPath);
                 }
             }
@@ -207,7 +207,7 @@ public class DijkstraPathFinder implements PathFinder
      * @param pathCells The path cells of the map after running the Dijkstra algorithm.
      * @return The coordinates to visit for a shortest path from origin to destination.
      */
-    private ShortestPath createShortestPathList(PathCoordinate[][] pathCells, Coordinate origin, Coordinate dest) {
+    private ShortestPath createShortestPath(PathCoordinate[][] pathCells, Coordinate origin, Coordinate dest) {
         List<Coordinate> path = new ArrayList<>();
         PathCoordinate currLast = pathCells[dest.getRow()][dest.getColumn()];
         int pathWeight = currLast.getDistance();
