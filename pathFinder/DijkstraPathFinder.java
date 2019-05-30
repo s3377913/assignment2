@@ -17,14 +17,11 @@ public class DijkstraPathFinder implements PathFinder
     public List<Coordinate> findPath() {
         int originsLength = map.originCells.size();
         int destLength = map.destCells.size();
-        System.out.println("originsLength: " + originsLength);
-        System.out.println("destLength: " + destLength);
         ArrayList<ShortestPath> paths = new ArrayList<>();
         for (int j=0; j<originsLength; j++) {
             Coordinate sourceCoord = map.originCells.get(j);
             PathCoordinate[][] pathCells = findPathsSingleSource(sourceCoord);
             for (int i=0; i<destLength; i++) {
-                System.out.println("i: " + i + ", j: " + j);
                 List<Coordinate> list;
                 Coordinate destCoord = map.destCells.get(i);
                 if (map.waypointCells.size() == 0) {
@@ -33,7 +30,6 @@ public class DijkstraPathFinder implements PathFinder
                     list = createShortestPathAlongWaypoints(sourceCoord, destCoord, map.waypointCells);
                 }
                 ShortestPath shortestPath = new ShortestPath(list);
-                System.out.println("shortestPath weight for " + j + ", " + i + ": " + shortestPath.getWeight());
                 paths.add(shortestPath);
             }
         }
