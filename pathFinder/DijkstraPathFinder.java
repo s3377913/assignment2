@@ -26,15 +26,14 @@ public class DijkstraPathFinder implements PathFinder
             Coordinate sourceCoord = map.originCells.get(j);
             PathCoordinate[][] pathCells = findPathsSingleSource(sourceCoord);
             for (int i=0; i<destLength; i++) { // Iteration over every destination
-                List<Coordinate> list;
+                ShortestPath shortestPath;
                 Coordinate destCoord = map.destCells.get(i);
                 if (map.waypointCells.size() == 0) { // No Waypoints have to be included, solve Task A/B:
                     // (Task C is solved through the iterations over the origins and destinations above)
-                    list = createShortestPathList(pathCells, sourceCoord, destCoord);
+                    shortestPath = createShortestPathList(pathCells, sourceCoord, destCoord);
                 } else { // Waypoints have to be included, solve Task D:
-                    list = createShortestPathAlongWaypoints(sourceCoord, destCoord, map.waypointCells);
+                    shortestPath = createShortestPathAlongWaypoints(sourceCoord, destCoord, map.waypointCells);
                 }
-                ShortestPath shortestPath = new ShortestPath(list);
                 paths.add(shortestPath);
             }
         }
@@ -55,7 +54,7 @@ public class DijkstraPathFinder implements PathFinder
      * @param waypointCells All waypoint cells which should be visited.
      * @return The shortest path from source to destination including all waypoints.
      */
-    private List<Coordinate> createShortestPathAlongWaypoints(Coordinate sourceCoord,
+    private ShortestPath createShortestPathAlongWaypoints(Coordinate sourceCoord,
                                                               Coordinate destCoord, List<Coordinate> waypointCells) {
         List<Coordinate> allCoords = new ArrayList<>(waypointCells);
         allCoords.add(sourceCoord);
@@ -81,15 +80,13 @@ public class DijkstraPathFinder implements PathFinder
                 } // End of source <-> destination exclusion
                 // Add the edge between startCoord and endCoord if it does not exist already and startCoord != endCoord:
                 if (!startCoord.equals(endCoord) && !distanceGraph.edgeExists(startCoord, endCoord)) {
-                    List<Coordinate> path = createShortestPathList(pathCells, startCoord, endCoord);
-                    ShortestPath shortestPath = new ShortestPath(path);
+                    ShortestPath shortestPath = createShortestPathList(pathCells, startCoord, endCoord);
                     distanceGraph.addEdge(startCoord, endCoord, shortestPath.getWeight(), shortestPath);
                 }
             }
         } // Creation of shortest distances graph complete
 
-        ShortestPath result = searchForShortestPathAlongWaypoints(sourceCoord, destCoord, new HashSet<>(waypointCells), distanceGraph);
-        return result.getCoordList();
+        return searchForShortestPathAlongWaypoints(sourceCoord, destCoord, new HashSet<>(waypointCells), distanceGraph);
     }
 
     /**
@@ -189,22 +186,23 @@ public class DijkstraPathFinder implements PathFinder
      * @param pathCells The path cells of the map after running the Dijkstra algorithm.
      * @return The coordinates to visit for a shortest path from source to destination.
      */
-    private List<Coordinate> createShortestPathList(PathCoordinate[][] pathCells, Coordinate source, Coordinate dest) {
+    private ShortestPath createShortestPathList(PathCoordinate[][] pathCells, Coordinate source, Coordinate dest) {
         List<Coordinate> path = new ArrayList<>();
         PathCoordinate currLast = pathCells[dest.getRow()][dest.getColumn()];
+        int pathWeight = currLast.getDistance();
         while (!currLast.getCoordinate().equals(source)) {
             path.add(currLast.getCoordinate());
             Coordinate prev = currLast.getPrevious();
             if (prev == null) {
-                // No Connection between source and destination found
-                return new ArrayList<>();
+                // No Connection between source and destination found, return invalid path
+                return new ShortestPath();
             }
             currLast = pathCells[prev.getRow()][prev.getColumn()];
         }
         // Add the source to the list:
         path.add(source);
         Collections.reverse(path);
-        return path;
+        return new ShortestPath(path, pathWeight);
     }
 
     /**

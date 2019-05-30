@@ -15,19 +15,13 @@ class ShortestPath {
     private boolean validPath;
 
     /**
-     * Constructor of the shortest path. The shortest path will not be empty and the weight will be set to
-     * Integer.MAX_VALUE if the coordList is empty.
+     * Constructor of the shortest path. The shortest path must be valid and the coordList must not be empty.
      * @param coordList The list of coordinates which the ShortestPath instance represents.
      */
-    public ShortestPath(List<Coordinate> coordList) {
+    public ShortestPath(List<Coordinate> coordList, int pathWeight) {
         this.coordList = coordList;
-        if (coordList.isEmpty()) {
-            this.pathWeight = Integer.MAX_VALUE;
-            this.validPath = false;
-        } else {
-            setWeight();
-            validPath = true;
-        }
+        this.pathWeight = pathWeight;
+        this.validPath = true;
     }
 
     /**
@@ -67,24 +61,10 @@ class ShortestPath {
         }
     }
 
-    public void setWeight() {
-        int incrementingWeight = 0;
-        for (int i=0; i< coordList.size(); i++) {
-            Coordinate currCoord = coordList.get(i);
-            incrementingWeight += currCoord.getTerrainCost();
-        }
-        if (coordList.size() == 0) {
-            // No shortest Path found
-            this.pathWeight =  Integer.MAX_VALUE;
-        } else {
-            this.pathWeight = incrementingWeight;
-        }
-    }
-
     /**
      * It is possible that a path is not valid if the constructor concatenating
      * two paths is used to create an instance and the last element of the start path and the first element of the
-     * end path are not equal.
+     * end path are not equal or a dummy path is created.
      * @return True if the path is valid.
      */
     public boolean isValidPath() {
@@ -92,7 +72,7 @@ class ShortestPath {
     }
 
     public int getWeight() {
-        return this.pathWeight;
+        return pathWeight;
     }
 
     public List<Coordinate> getCoordList() {
